@@ -1,0 +1,110 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    // Complete the queensAttack function below.
+    static int queensAttack(int n, int k, int row, int col, int[][] obstacles) {
+        int left = col - 1; 
+        int right = n - col; 
+        int up = n - row; 
+        int down = row - 1;  
+        int upleft =  Math.min(n - row, col - 1);
+        int upright = Math.min(n - col, n - row);
+        int downleft = Math.min(col, row) - 1; 
+        int downright = Math.min(n - col, row - 1);
+        for (int i = 0; i < k; i++) {
+            if (obstacles[i][0] == row && obstacles[i][1] > col) {
+                if (col - obstacles[i][1] - 1 < right) {
+                    right = obstacles[i][1] - col - 1;
+                }
+            } 
+            if (obstacles[i][0] == row && obstacles[i][1] < col) {
+                if ( col - obstacles[i][1] - 1 < left) {
+                    left = col - obstacles[i][1] - 1;
+                }
+            }
+            if (obstacles[i][1] == col && obstacles[i][0] > row) {
+                if (obstacles[i][0] - row - 1< up) {
+                    up = obstacles[i][0] - row - 1;
+                }  
+            }
+            if (obstacles[i][1] == col && obstacles[i][0] < row) {
+                 if (row - obstacles[i][0] - 1 < down) {
+                    down = row - obstacles[i][0] - 1;
+                } 
+            }
+            if (Math.abs(obstacles[i][0] - row) == Math.abs(obstacles[i][1] - col)) {
+                 if (obstacles[i][0] > row && obstacles[i][1] > col) {
+                     if (Math.abs(obstacles[i][0] - row) < upright) {
+                         upright = Math.abs(obstacles[i][0] - row) - 1;
+                     }
+                 }
+                 if (obstacles[i][0] > row && obstacles[i][1] < col) {
+                     if (Math.abs(obstacles[i][0] - row) < upleft) {
+                         upleft = Math.abs(obstacles[i][0] - row) - 1;
+                     }
+                 }
+                 if (obstacles[i][0] < row && obstacles[i][1] > col) {
+                     if (Math.abs(obstacles[i][0] - row) < downright) {
+                         downright = Math.abs(obstacles[i][0] - row) - 1;
+                     }
+                 }
+                 if (obstacles[i][0] < row && obstacles[i][1] < col) {
+                     if (Math.abs(obstacles[i][0] - row) < downleft) {
+                         downleft = Math.abs(obstacles[i][0] - row) - 1;
+                     }
+                 }
+            }
+            
+         } 
+        
+
+          return up + down + left + right + downleft + downright + upleft + upright;
+         
+    }
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String[] nk = scanner.nextLine().split(" ");
+
+        int n = Integer.parseInt(nk[0]);
+
+        int k = Integer.parseInt(nk[1]);
+
+        String[] r_qC_q = scanner.nextLine().split(" ");
+
+        int row = Integer.parseInt(r_qC_q[0]);
+
+        int col = Integer.parseInt(r_qC_q[1]);
+
+        int[][] obstacles = new int[k][2];
+
+        for (int i = 0; i < k; i++) {
+            String[] obstaclesRowItems = scanner.nextLine().split(" ");
+            scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+
+            for (int j = 0; j < 2; j++) {
+                int obstaclesItem = Integer.parseInt(obstaclesRowItems[j]);
+                obstacles[i][j] = obstaclesItem;
+            }
+        }
+
+        int result = queensAttack(n, k, row, col, obstacles);
+
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+    }
+}
